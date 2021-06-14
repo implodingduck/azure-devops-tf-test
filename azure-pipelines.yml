@@ -1,0 +1,74 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+  
+stages:
+  - stage: Terraform
+    jobs:
+    - job: Terraform_Stuff
+      steps:
+      - script: terraform --version
+        displayName: 'check terraform version'
+      - task: AzureCLI@2
+        displayName: "Terraform Init"
+        env:
+          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+        inputs:
+          azureSubscription: 'ARM_SUBSCRIPTION'
+          addSpnToEnvironment: true
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+            export TF_VAR_subscription_name=$(az account show --query 'name' --output tsv)
+            export ARM_CLIENT_ID=$servicePrincipalId
+            export ARM_CLIENT_SECRET=$servicePrincipalKey 
+            export ARM_TENANT_ID=$tenantId
+            export AZDO_ORG_SERVICE_URL=$(System.CollectionUri)
+            export AZDO_PERSONAL_ACCESS_TOKEN=$SYSTEM_ACCESSTOKEN
+            terraform init
+      - task: AzureCLI@2
+        displayName: "Terraform Plan"
+        env:
+          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+        inputs:
+          azureSubscription: 'ARM_SUBSCRIPTION'
+          addSpnToEnvironment: true
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+            export TF_VAR_subscription_name=$(az account show --query 'name' --output tsv)
+            export ARM_CLIENT_ID=$servicePrincipalId
+            export ARM_CLIENT_SECRET=$servicePrincipalKey 
+            export ARM_TENANT_ID=$tenantId
+            export AZDO_ORG_SERVICE_URL=$(System.CollectionUri)
+            export AZDO_PERSONAL_ACCESS_TOKEN=$SYSTEM_ACCESSTOKEN 
+            terraform plan -out theplan
+      - task: AzureCLI@2
+        displayName: "Terraform Apply"
+        env:
+          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+        inputs:
+          azureSubscription: 'ARM_SUBSCRIPTION'
+          addSpnToEnvironment: true
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+            export TF_VAR_subscription_name=$(az account show --query 'name' --output tsv)
+            export ARM_CLIENT_ID=$servicePrincipalId
+            export ARM_CLIENT_SECRET=$servicePrincipalKey 
+            export ARM_TENANT_ID=$tenantId
+            export AZDO_ORG_SERVICE_URL=$(System.CollectionUri)
+            export AZDO_PERSONAL_ACCESS_TOKEN=$SYSTEM_ACCESSTOKEN 
+            terraform apply -auto-approve theplan
+      - publish: theplan
