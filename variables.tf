@@ -25,4 +25,10 @@ variable "container_name" {
 
 variable "subscription_name" {
   type = string
+  sensitive = true
+}
+
+variable "serviceprincipalkey" {
+  type = string
+  sensitive = true
 }
