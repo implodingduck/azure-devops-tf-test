@@ -78,12 +78,12 @@ resource "azurerm_key_vault_secret" "secret" {
 
 resource "azuredevops_serviceendpoint_azurerm" "endpointazure" {
   project_id            = azuredevops_project.project.id
-  service_endpoint_name = "ARM_SUBSCRIPTION_DEMO"
+  service_endpoint_name = "ARM_SUBSCRIPTION_DEMO_2"
   azurerm_spn_tenantid      = data.azurerm_client_config.current.tenant_id
   azurerm_subscription_id   = data.azurerm_client_config.current.subscription_id
   azurerm_subscription_name = var.subscription_name
   credentials  {
-      serviceprincipalid = data.azurerm_client_config.current.object_id
+      serviceprincipalid = data.azurerm_client_config.current.client_id
       serviceprincipalkey = var.serviceprincipalkey 
   }
 }
