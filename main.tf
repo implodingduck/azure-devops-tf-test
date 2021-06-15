@@ -82,7 +82,7 @@ resource "azuredevops_serviceendpoint_azurerm" "endpointazure" {
   azurerm_spn_tenantid      = data.azurerm_client_config.current.tenant_id
   azurerm_subscription_id   = data.azurerm_client_config.current.subscription_id
   azurerm_subscription_name = var.subscription_name
-  client {
+  credentials  {
       serviceprincipalid = data.azurerm_client_config.current.principal_id
       serviceprincipalkey = var.serviceprincipalkey 
   }
