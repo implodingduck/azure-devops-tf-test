@@ -25,7 +25,9 @@ stages:
         env:
           SYSTEM_ACCESSTOKEN: $(System.AccessToken)
           TF_VAR_key: azure-devops-tf-test.tfstate
+          TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
           TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
+          TF_VAR_container_name: $(TF_VAR_container_name)
         inputs:
           azureSubscription: 'ARM_SUBSCRIPTION'
           addSpnToEnvironment: true
@@ -47,7 +49,9 @@ stages:
         env:
           SYSTEM_ACCESSTOKEN: $(System.AccessToken)
           TF_VAR_key: azure-devops-tf-test.tfstate
+          TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
           TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
+          TF_VAR_container_name: $(TF_VAR_container_name)
         inputs:
           azureSubscription: 'ARM_SUBSCRIPTION'
           addSpnToEnvironment: true
@@ -68,7 +72,9 @@ stages:
         env:
           SYSTEM_ACCESSTOKEN: $(System.AccessToken)
           TF_VAR_key: azure-devops-tf-test.tfstate
+          TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
           TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
+          TF_VAR_container_name: $(TF_VAR_container_name)
         inputs:
           azureSubscription: 'ARM_SUBSCRIPTION'
           addSpnToEnvironment: true
