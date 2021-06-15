@@ -83,7 +83,7 @@ resource "azuredevops_serviceendpoint_azurerm" "endpointazure" {
   azurerm_subscription_id   = data.azurerm_client_config.current.subscription_id
   azurerm_subscription_name = var.subscription_name
   credentials  {
-      serviceprincipalid = data.azurerm_client_config.current.principal_id
+      serviceprincipalid = data.azurerm_client_config.current.object_id
       serviceprincipalkey = var.serviceprincipalkey 
   }
 }
