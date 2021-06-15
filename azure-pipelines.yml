@@ -9,6 +9,9 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+
+variables
+  group: terraform-backend-library
   
 stages:
   - stage: Terraform
@@ -21,6 +24,8 @@ stages:
         displayName: "Terraform Init"
         env:
           SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+          TF_VAR_key: azure-devops-tf-test.tfstate
+          TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
         inputs:
           azureSubscription: 'ARM_SUBSCRIPTION'
           addSpnToEnvironment: true
@@ -28,17 +33,21 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+            export TF_VAR_subscription_id=$ARM_SUBSCRIPTION_ID
             export TF_VAR_subscription_name=$(az account show --query 'name' --output tsv)
             export ARM_CLIENT_ID=$servicePrincipalId
             export ARM_CLIENT_SECRET=$servicePrincipalKey 
             export ARM_TENANT_ID=$tenantId
             export AZDO_ORG_SERVICE_URL=$(System.CollectionUri)
             export AZDO_PERSONAL_ACCESS_TOKEN=$SYSTEM_ACCESSTOKEN
-            terraform init
+            ./env_setup.sh
+            terraform init --backend-config=backend.tfvars
       - task: AzureCLI@2
         displayName: "Terraform Plan"
         env:
           SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+          TF_VAR_key: azure-devops-tf-test.tfstate
+          TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
         inputs:
           azureSubscription: 'ARM_SUBSCRIPTION'
           addSpnToEnvironment: true
@@ -46,6 +55,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+            export TF_VAR_subscription_id=$ARM_SUBSCRIPTION_ID
             export TF_VAR_subscription_name=$(az account show --query 'name' --output tsv)
             export ARM_CLIENT_ID=$servicePrincipalId
             export ARM_CLIENT_SECRET=$servicePrincipalKey 
@@ -57,6 +67,8 @@ stages:
         displayName: "Terraform Apply"
         env:
           SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+          TF_VAR_key: azure-devops-tf-test.tfstate
+          TF_VAR_storage_account_name: $(TF_VAR_storage_account_name)
         inputs:
           azureSubscription: 'ARM_SUBSCRIPTION'
           addSpnToEnvironment: true
@@ -64,6 +76,7 @@ stages:
           scriptLocation: inlineScript
           inlineScript: |
             export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+            export TF_VAR_subscription_id=$ARM_SUBSCRIPTION_ID
             export TF_VAR_subscription_name=$(az account show --query 'name' --output tsv)
             export ARM_CLIENT_ID=$servicePrincipalId
             export ARM_CLIENT_SECRET=$servicePrincipalKey 
