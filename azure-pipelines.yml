@@ -11,7 +11,7 @@ pool:
 
 
 variables:
-  group: terraform-backend-library
+- group: terraform-backend-library
   
 stages:
   - stage: Terraform
